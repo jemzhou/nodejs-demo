@@ -1,17 +1,19 @@
 'use strict';
 var http = require('http');
 var fs = require('fs');
-var url = require('url');
+//var myurl = require('url');
 var port = process.env.PORT || 3000;
 
 http.createServer(function (request, response) {
-    // 解析请求，包括文件名
-    var pathname = url.parse(request.url).pathname;
+    // 将url字符串转化URL对象
+    const objUrl=new URL(request.url,`http://${request.headers.host}`);
 
+    // 解析请求，包括文件名
+    var pathname =objUrl.pathname;
     // 输出请求的文件名
     console.log("Request for " + pathname + " received.");
-    // 从文件系统中读取请求的文件内容
-    fs.readFile(pathname.substr(1), function (err, data) {
+    // 从文件系统中读取请求的文件内容（要去掉文件名前的“/”）
+    fs.readFile(pathname.substring(1), function (err, data) {
         if (err) {
             console.log(err);
             // HTTP 状态码: 404 : NOT FOUND
